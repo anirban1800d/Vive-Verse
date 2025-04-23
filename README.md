@@ -28,23 +28,27 @@
 
 ## 📁 Folder Structure
 
-viveversa/
-│ ├── dataset/ 
-│ ├── emotion_dataset_raw.csv # Emotion text dataset 
-│ └── text_emotion.pkl # Trained ML model (Pickle) 
-│ ├── models/ # (optional) future model extensions 
-│ ├── notebook/ 
-│ └── EMOTION_ANALYSIS.ipynb # Data exploration & training notebook 
-│ ├── static/ 
-│ ├── style.css # App styling (neon theme) 
-│ ├── favicon.ico # Website favicon 
-│ └── geometric-tech-shape...jpg # Futuristic background image 
-│ ├── templates/ 
-│ └── index.html # Frontend HTML template 
-│ ├── app.py # Flask backend server 
-├── README.md # Project readme 
-├── requirements.txt # Required Python packages 
-└── venv/ # Virtual environment (not uploaded)
-=======
-# Vive-Verse
->>>>>>> 9af16ac72c87cca4caed0ff29bd0a92ac595b01c
+📁 viveversa/
+├── 📂 dataset/
+│   └── emotion_dataset_raw.csv      📄 Emotion text dataset
+│   └── text_emotion.pkl             📦 Trained ML model (Pickle)
+│
+├── 📂 models/                        📁 Future model extensions (optional)
+│
+├── 📂 notebook/
+│   └── EMOTION_ANALYSIS.ipynb       📓 Data exploration & model training
+│
+├── 📂 static/
+│   ├── style.css                    🎨 Neon-themed CSS styling
+│   ├── favicon.ico                 🌐 Website icon
+│   └── geometric-tech-shape.jpg    🖼️ Futuristic background image
+│
+├── 📂 templates/
+│   └── index.html                  🧩 HTML template for frontend
+│
+├── app.py                          🧠 Flask backend logic
+├── README.md                       📘 Project overview and usage
+├── requirements.txt                📦 Python dependencies
+├── .gitignore                      🚫 Files and folders to ignore in Git
+└── venv/                           🐍 Virtual environment (excluded from Git)
+
