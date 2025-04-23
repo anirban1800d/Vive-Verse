@@ -1,0 +1,13 @@
+# Ignore Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Ignore Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Ignore model files (optional)
+*.pkl
+
+# VSCode config (optional)
+.vscode/
