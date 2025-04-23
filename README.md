@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🌈 ViveVersa - Emotion Detection Web App
 
 **ViveVersa** is an AI-powered emotion detection web application that uses Natural Language Processing to analyze user input and classify emotions. It features a stylish, futuristic frontend with smooth animations and a powerful backend for real-time predictions.
@@ -44,3 +45,6 @@ viveversa/
 ├── README.md # Project readme 
 ├── requirements.txt # Required Python packages 
 └── venv/ # Virtual environment (not uploaded)
+=======
+# Vive-Verse
+>>>>>>> 9af16ac72c87cca4caed0ff29bd0a92ac595b01c
