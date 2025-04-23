@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Analyzer</title>
+    <!-- Orbitron Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <!-- Chart.js for graphs -->
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title">🔥 Emotion Analyzer 🔥</h1>
+
+        <!-- Text Input Form -->
+        <form id="textForm">
+            <textarea id="textInput" placeholder="Type your text here..." required></textarea>
+            <button type="submit" class="btn">Analyze Emotion</button>
+        </form>
+
+        <!-- Loader Animation -->
+        <div id="loader"></div>
+
+        <!-- Error Message -->
+        <p id="errorMessage"></p>
+
+        <!-- Results Section -->
+        <div id="results">
+            <h2>Emotion Detected: <span id="emotion"></span> <span id="emoji"></span></h2>
+            
+            <!-- Chart for Emotion Probabilities -->
+            <canvas id="emotionChart"></canvas>
+
+            <!-- Recommendations -->
+            <div class="recommendations">
+                <h3>🎬 Movie Recommendations</h3>
+                <div id="movieRecommendations"></div>
+
+                <h3>🎵 Music Recommendations</h3>
+                <div id="musicRecommendations"></div>
+
+                <h3>🎮 Game Recommendations</h3>
+                <div id="gameRecommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.getElementById('textForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const loader = document.getElementById('loader');
+            const results = document.getElementById('results');
+            const errorMessage = document.getElementById('errorMessage');
+            const emotionText = document.getElementById('emotion');
+            const emojiText = document.getElementById('emoji');
+
+            loader.style.display = 'block';
+            results.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            fetch('/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `text=${encodeURIComponent(document.getElementById('textInput').value)}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data);
+
+                loader.style.display = 'none';
+                results.style.display = 'block';
+
+                emotionText.textContent = data.emotion || 'Unknown';
+                emojiText.textContent = data.emoji || '';
+
+                try {
+                    createEmotionChart(data.emotion_probabilities || []);
+                } catch (chartError) {
+                    console.error('Chart error:', chartError);
+                }
+
+                try {
+                    displayRecommendations('movieRecommendations', data.movies || [], 'movie');
+                    displayRecommendations('musicRecommendations', data.music || [], 'music');
+                    displayRecommendations('gameRecommendations', data.games || [], 'game');
+                } catch (recError) {
+                    console.error('Recommendations error:', recError);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                loader.style.display = 'none';
+                errorMessage.innerHTML = `<strong>Error:</strong> ${error.message}. Please try again.`;
+                errorMessage.style.display = 'block';
+            });
+        });
+
+        function createEmotionChart(emotions) {
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+            if (window.emotionChart) window.emotionChart.destroy();
+
+            window.emotionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: emotions.map(e => e.emotion),
+                    datasets: [{
+                        label: 'Probability (%)',
+                        data: emotions.map(e => (e.probability * 100).toFixed(2)),  
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)'
+                        ],
+                        borderColor: 'rgba(0, 0, 0, 0.8)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: 'Probability (%)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        }
+
+        function displayRecommendations(id, items, type) {
+            const container = document.getElementById(id);
+            container.innerHTML = '';
+
+            if (!items || items.length === 0) {
+                container.innerHTML = '<p class="no-recommendations">No recommendations available.</p>';
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'recommendation-card fade-in';
+
+                let displayText = '';
+                if (type === 'movie' && typeof item === 'object' && item.title) {
+                    displayText = `${item.title} (${item.year || 'N/A'})`;
+                } else if ((type === 'music' || type === 'game') && typeof item === 'string') {
+                    displayText = item;
+                } else {
+                    displayText = item.toString();
+                }
+
+                div.innerHTML = `<h6>${index + 1}. ${displayText}</h6>`;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>

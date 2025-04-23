@@ -1,0 +1,14 @@
+Flask
+opencv-python
+numpy
+keras
+tensorflow
+joblib
+pandas
+spotipy
+tmdbv3api
+requests
+scikit-learn
+streamlit
+altair
+flask_cors
